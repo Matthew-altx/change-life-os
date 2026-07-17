@@ -13,7 +13,7 @@
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "vitest run --config vitest.config.ts && npm run build && node --test tests/rendered-html.test.mjs",
     "test:google": "node --test tests/google-*.test.mjs",
-    "test:pages": "npm run build:pages",
+    "test:pages": "node --test tests/pages-contract.test.mjs && npm run build:pages",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern dist-pages --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },
