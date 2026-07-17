@@ -38,6 +38,12 @@ yarn-error.log*
 next-env.d.ts
 *.tsbuildinfo
 /dist/
+/dist-pages/
 /.wrangler/
 /outputs/
 /work/
+
+# local project instructions and service logs
+/AGENTS.md
+/firebase-debug.log
+/.firebase/

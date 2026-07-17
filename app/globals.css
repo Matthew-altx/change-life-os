@@ -68,6 +68,9 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .sidebar nav button.active, .sidebar nav button:hover { color: white; background: rgba(255,255,255,.1); }
 .sidebar nav button.active span { color: var(--gold); }
 .sidebar-progress { margin-top: auto; padding: 18px; border: 1px solid rgba(255,255,255,.13); border-radius: 16px; background: rgba(0,0,0,.08); }
+.guide-link { min-height: 44px; margin: auto 0 12px; padding: 0 14px; border: 1px solid rgba(255,255,255,.14); border-radius: 12px; color: #dce7e1; background: rgba(255,255,255,.06); text-align: left; font-size: 12px; font-weight: 750; }
+.guide-link:hover { color: white; border-color: rgba(215,174,94,.55); }
+.guide-fab { display: none; }
 .sidebar-progress p { margin: 0 0 5px; color: var(--gold); font-size: 10px; letter-spacing: .15em; }
 .sidebar-progress strong { display: block; font-size: 14px; }
 .sidebar-progress span { display: block; margin-top: 7px; color: #9db0a7; font-size: 11px; line-height: 1.5; }
@@ -216,6 +219,17 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .notice span { font-size: 20px; }
 .mobile-nav { display: none; }
 
+.guide-backdrop { position: fixed; inset: 0; z-index: 100; padding: 24px; display: grid; place-items: center; background: rgba(8,31,23,.72); backdrop-filter: blur(8px); }
+.guide-modal { width: min(700px, 100%); max-height: min(780px, calc(100vh - 48px)); overflow: auto; padding: clamp(24px, 4vw, 38px); border: 1px solid rgba(255,255,255,.7); border-radius: 24px; background: var(--paper); box-shadow: 0 34px 100px rgba(0,0,0,.34); }
+.guide-modal > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.guide-modal h2 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(28px, 5vw, 40px); line-height: 1.18; }
+.guide-list { margin-top: 26px; display: grid; gap: 10px; }
+.guide-list article { padding: 16px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+.guide-list article > span { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--green); font-family: Georgia, serif; }
+.guide-list h3 { margin: 1px 0 5px; font-size: 15px; }
+.guide-list p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.guide-modal footer { margin-top: 22px; display: flex; justify-content: flex-end; }
+
 @media (max-width: 1050px) {
   .human-grid { grid-template-columns: repeat(2, 1fr); }
   .quest-layout { grid-template-columns: 1fr; }
@@ -244,6 +258,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
   .data-card { align-items: flex-start; flex-direction: column; }
   .data-actions { justify-content: flex-start; }
   .mobile-nav { position: fixed; inset: auto 0 0; z-index: 30; height: 76px; padding: 7px 8px calc(7px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); background: rgba(251,249,244,.96); backdrop-filter: blur(16px); }
+  .guide-fab { position: fixed; z-index: 35; top: 14px; right: 14px; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.5); border-radius: 50%; color: white; background: var(--green); box-shadow: 0 8px 24px rgba(20,60,45,.2); font-weight: 800; }
   .mobile-nav button { min-width: 0; min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; font-size: 10px; }
   .mobile-nav button span { color: #9aa69f; font-family: Georgia, serif; font-size: 9px; }
   .mobile-nav button.active { color: white; background: var(--green); }
@@ -253,6 +268,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
   .onboarding-card { padding: 26px 20px; border-radius: 22px; }
   .step-track { margin-bottom: 28px; }
   .privacy-note { text-align: center; }
+  .guide-backdrop { padding: 12px; }
+  .guide-modal { max-height: calc(100vh - 24px); padding: 24px 18px; border-radius: 20px; }
 }
 
 @media (max-width: 460px) {

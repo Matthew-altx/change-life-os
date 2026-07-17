@@ -58,6 +58,14 @@ const HUMAN = [
   { key: "vocation", label: "天職", en: "VOCATION", prompt: "今日有幾接近真正工作？" },
 ] as const;
 
+const GUIDE_STEPS = [
+  ["先寫反願景", "講清楚你五年後最唔想見到嘅生活，將模糊焦慮變成可見方向。"],
+  ["鎖定 90 日主線", "只揀一個可以驗證嘅結果，再定義一場你一直逃避嘅 Boss 戰。"],
+  ["每日唯一優先", "每日先完成最高槓桿行動，再處理低價值工作同外界要求。"],
+  ["用任務累積技能", "將行動分類為主線、支線或 Boss 戰，同步提升寫作、演講、行銷、銷售。"],
+  ["輸出與復盤", "用 PIA 將經驗變成內容；晚上用 3-2-1 復盤，定期匯出本機備份。"],
+] as const;
+
 const formatTimer = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
@@ -167,12 +175,32 @@ function Onboarding({ onFinish }: { onFinish: (profile: AppState["profile"]) => 
   );
 }
 
-function Shell({ screen, setScreen, children, level, streak }: {
+function GuideModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="guide-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <section className="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+        <header>
+          <div><p className="eyebrow">使用指南</p><h2 id="guide-title">五步啟動 Change-Life OS</h2></div>
+          <button className="close" onClick={onClose} aria-label="關閉使用指南">×</button>
+        </header>
+        <div className="guide-list">
+          {GUIDE_STEPS.map(([title, copy], index) => (
+            <article key={title}><span>{index + 1}</span><div><h3>{title}</h3><p>{copy}</p></div></article>
+          ))}
+        </div>
+        <footer><button className="button primary" onClick={onClose}>明白，開始行動</button></footer>
+      </section>
+    </div>
+  );
+}
+
+function Shell({ screen, setScreen, children, level, streak, onGuide }: {
   screen: Screen;
   setScreen: (screen: Screen) => void;
   children: React.ReactNode;
   level: number;
   streak: number;
+  onGuide: () => void;
 }) {
   return (
     <div className="app-shell">
@@ -187,11 +215,13 @@ function Shell({ screen, setScreen, children, level, streak }: {
             </button>
           ))}
         </nav>
+        <button className="guide-link" onClick={onGuide}>？ 使用指南</button>
         <div className="sidebar-progress">
           <p>LEVEL {level}</p><strong>{streak} 日連續行動</strong><span>保持勢能，而唔係追求完美。</span>
         </div>
       </aside>
       <div className="main-wrap">{children}</div>
+      <button className="guide-fab" onClick={onGuide} aria-label="打開使用指南">？</button>
       <nav className="mobile-nav">
         {NAV.map((item) => (
           <button key={item.id} className={screen === item.id ? "active" : ""} onClick={() => setScreen(item.id)}>
@@ -369,6 +399,7 @@ export default function ChangeLifeOS() {
   const [hydrated, setHydrated] = useState(false);
   const [screen, setScreen] = useState<Screen>("today");
   const [notice, setNotice] = useState("");
+  const [guideOpen, setGuideOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -404,12 +435,13 @@ export default function ChangeLifeOS() {
     if (window.confirm("確定清除全部資料？呢個動作無法復原，建議先匯出備份。")) setState(createInitialState());
   };
 
-  return <Shell screen={screen} setScreen={setScreen} level={progress.level} streak={streak}>
+  return <Shell screen={screen} setScreen={setScreen} level={progress.level} streak={streak} onGuide={() => setGuideOpen(true)}>
     {notice && <button className="notice" onClick={() => setNotice("")} role="status">{notice}<span>×</span></button>}
     {screen === "today" && <Today state={state} update={update} />}
     {screen === "vision" && <Vision state={state} update={update} />}
     {screen === "quests" && <Quests state={state} update={update} />}
     {screen === "content" && <Content state={state} update={update} />}
     {screen === "reset" && <Reset state={state} update={update} onImport={importData} onClear={clear} />}
+    {guideOpen && <GuideModal onClose={() => setGuideOpen(false)} />}
   </Shell>;
 }
