@@ -6,7 +6,7 @@
 
 ## 線上版本
 
-[立即使用 Change-Life OS](https://enwong93-sketch.github.io/change-life-os/)
+[立即使用 Change-Life OS](https://matthew-altx.github.io/change-life-os/)
 
 GitHub Pages 版本毋須註冊。個人資料只會儲存喺目前瀏覽器嘅 `localStorage`，唔會上傳到本專案或第三方伺服器。
 
