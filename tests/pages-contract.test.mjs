@@ -31,6 +31,23 @@ const cssHex = (token) => {
   return match[1];
 };
 
+const cssBlock = (source, token) => {
+  const tokenIndex = source.indexOf(token);
+  assert.notEqual(tokenIndex, -1, `Missing CSS token: ${token}`);
+
+  const openingBrace = source.indexOf("{", tokenIndex);
+  assert.notEqual(openingBrace, -1, `Missing opening brace for: ${token}`);
+
+  let depth = 0;
+  for (let index = openingBrace; index < source.length; index += 1) {
+    if (source[index] === "{") depth += 1;
+    if (source[index] === "}") depth -= 1;
+    if (depth === 0) return source.slice(openingBrace + 1, index);
+  }
+
+  assert.fail(`Missing closing brace for: ${token}`);
+};
+
 test("GitHub Pages build uses the repository subpath", () => {
   assert.match(viteConfig, /GITHUB_REPOSITORY/);
   assert.match(viteConfig, /base: repositoryName/);
@@ -71,9 +88,11 @@ test("Editorial Focus shell keeps utilities and responsive guidance in the conte
   assert.match(styles, /\.human-grid \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.score-row \{[^}]*grid-template-columns: repeat\(5, minmax\(44px, 1fr\)\)/);
   assert.match(styles, /\.score-row button \{[^}]*min-width: 44px;[^}]*min-height: 44px/);
-  const humanStackRule = styles.match(/@media \(max-width: (\d+)px\) \{\s*\.human-grid \{ grid-template-columns: 1fr; \}\s*\}/);
-  assert.ok(humanStackRule, "HUMAN grid needs an explicit narrow-sidebar stack rule");
-  assert.ok(Number(humanStackRule[1]) >= 862, "HUMAN grid must stack across the 781-862px sidebar range");
+  const tabletShell = cssBlock(styles, "@media (max-width: 900px)");
+  const mobileStack = cssBlock(styles, "@media (max-width: 700px)");
+  assert.match(tabletShell, /\.sidebar \{ display: none; \}/);
+  assert.match(tabletShell, /\.mobile-nav \{[^}]*display: grid/);
+  assert.match(mobileStack, /\.human-grid \{ grid-template-columns: 1fr; \}/);
   assert.match(styles, /\.sidebar nav button\.active \{[^}]*border-left: 3px solid var\(--orange\)/);
   assert.match(styles, /\.sidebar nav button\.active span \{ color: var\(--orange\); \}/);
   assert.match(styles, /\.mobile-nav button\.active \{[^}]*var\(--orange\)/);
@@ -90,6 +109,28 @@ test("Editorial Focus shell keeps utilities and responsive guidance in the conte
   assert.match(styles, /\.guide-modal \{[^}]*height: 100dvh/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(styles, /gradient\(/);
+});
+
+test("compact editorial shell protects title measure and responsive navigation", () => {
+  assert.match(styles, /\.top-utility \{[^}]*min-height: 56px/);
+  assert.match(styles, /\.screen \{[^}]*padding: 40px clamp\(24px, 4vw, 56px\) 80px/);
+  assert.match(styles, /\.page-head \{[^}]*margin-bottom: 28px/);
+  assert.match(
+    styles,
+    /\.page-head h1 \{[^}]*font-size: clamp\(38px, 3\.2vw, 46px\);[^}]*line-height: 1\.1;[^}]*text-wrap: balance/,
+  );
+  assert.doesNotMatch(styles, /\.page-head h1 \{[^}]*(?:text-overflow: ellipsis|overflow: hidden|white-space: nowrap)/);
+
+  const tabletShell = cssBlock(styles, "@media (max-width: 900px)");
+  assert.match(tabletShell, /\.sidebar \{ display: none; \}/);
+  assert.match(tabletShell, /\.main-wrap \{ margin-left: 0; \}/);
+  assert.match(tabletShell, /\.mobile-nav \{[^}]*display: grid/);
+  assert.match(tabletShell, /\.page-head h1 \{ font-size: clamp\(34px, 4\.4vw, 40px\); \}/);
+
+  const mobileStack = cssBlock(styles, "@media (max-width: 700px)");
+  assert.match(mobileStack, /\.page-head h1 \{ font-size: clamp\(30px, 8\.4vw, 34px\); \}/);
+  assert.match(mobileStack, /\.hero-grid, \.work-grid, \.vision-grid, \.reset-grid, \.human-grid \{ grid-template-columns: 1fr; \}/);
+  assert.doesNotMatch(styles, /@media \(max-width: 780px\)/);
 });
 
 test("contextual guide is keyboard accessible and reopenable", () => {
