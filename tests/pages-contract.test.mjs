@@ -47,6 +47,16 @@ test("usage guide is reopenable from the main application", () => {
 test("Editorial Focus shell keeps utilities and responsive guidance in the content area", () => {
   assert.match(app, /<div className="main-wrap">\s*<header className="top-utility">/);
   assert.match(styles, /--canvas: #F5F1E8/);
+  assert.match(styles, /--muted: #58675F/);
+  assert.match(styles, /:focus-visible \{ outline: 3px solid var\(--deep-orange\)/);
+  assert.match(styles, /\.human-grid \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.score-row \{[^}]*grid-template-columns: repeat\(5, minmax\(44px, 1fr\)\)/);
+  assert.match(styles, /\.score-row button \{[^}]*min-width: 44px;[^}]*min-height: 44px/);
+  assert.match(styles, /\.sidebar nav button\.active \{[^}]*border-left: 3px solid var\(--orange\)/);
+  assert.match(styles, /\.sidebar nav button\.active span \{ color: var\(--orange\); \}/);
+  assert.match(styles, /\.mobile-nav button\.active \{[^}]*var\(--orange\)/);
+  assert.match(styles, /\.mobile-nav button\.active span \{ color: var\(--orange\); \}/);
+  assert.doesNotMatch(styles, /\.(?:sidebar nav button|mobile-nav button)\.active(?: span)? \{[^}]*var\(--gold\)/);
   assert.match(styles, /\.guide-modal \{[^}]*height: 100dvh/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(styles, /gradient\(/);
