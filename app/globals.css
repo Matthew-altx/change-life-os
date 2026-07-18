@@ -253,6 +253,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .guide-tabs button { min-height: 42px; padding: 0 14px; border: 0; border-radius: 9px; color: var(--muted); background: transparent; font-weight: 750; }
 .guide-tabs button[aria-selected="true"] { color: white; background: var(--green); }
 .guide-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.guide-dialog [hidden] { display: none; }
 
 @media (max-width: 1050px) {
   .human-grid { grid-template-columns: repeat(2, 1fr); }

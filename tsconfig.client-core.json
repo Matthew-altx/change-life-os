@@ -18,6 +18,7 @@
     "app/storage.ts",
     "app/rootState.ts",
     "app/rootState.test.ts",
+    "app/GuideDialog.test.tsx",
     "app/ChangeLifeOS.tsx"
   ]
 }

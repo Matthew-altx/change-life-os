@@ -58,6 +58,7 @@ test("contextual guide is keyboard accessible and reopenable", () => {
   assert.match(app, /if \(!storedPreferences\.guideSeen\)/);
   assert.match(app, /setGuideMode\("orientation"\)/);
   assert.match(app, /setGuideMode\("module"\)/);
+  assert.match(app, /id="screen-title" tabIndex=\{-1\}/);
   assert.match(rootState, /case "set-guide-seen"/);
 });
 

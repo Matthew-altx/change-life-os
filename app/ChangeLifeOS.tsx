@@ -185,7 +185,7 @@ function Shell({ screen, setScreen, children, level, streak, onGuide, copy, loca
 }
 
 function PageHead({ eyebrow, title, copy, action }: { eyebrow: string; title: string; copy: string; action?: React.ReactNode }) {
-  return <header className="page-head"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p>{copy}</p></div>{action}</header>;
+  return <header className="page-head"><div><p className="eyebrow">{eyebrow}</p><h1 id="screen-title" tabIndex={-1}>{title}</h1><p>{copy}</p></div>{action}</header>;
 }
 
 function Today({ state, update, copy, locale }: { state: AppState; update: (fn: (state: AppState) => AppState) => void; copy: Copy; locale: Locale }) {

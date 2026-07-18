@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Copy, Screen } from "./i18n";
 
 export type GuideMode = "orientation" | "module";
@@ -34,10 +34,24 @@ export function GuideDialog({
   const [step, setStep] = useState(0);
   const dialogRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const orientationTabRef = useRef<HTMLButtonElement>(null);
+  const moduleTabRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const closing = useRef(false);
+  const onCloseRef = useRef(onClose);
   const moduleGuide = copy.guide.modules[screen];
   const orientationStep = copy.guide.orientation[step];
   const isLastStep = step === copy.guide.orientation.length - 1;
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const requestClose = useCallback(() => {
+    if (closing.current) return;
+    closing.current = true;
+    onCloseRef.current();
+  }, []);
 
   useEffect(() => {
     previouslyFocused.current =
@@ -49,7 +63,7 @@ export function GuideDialog({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        requestClose();
         return;
       }
       if (event.key !== "Tab") return;
@@ -58,7 +72,7 @@ export function GuideDialog({
       if (!dialog) return;
       const focusable = Array.from(
         dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      ).filter((element) => !element.hasAttribute("disabled"));
+      ).filter((element) => element.tabIndex >= 0);
       const first = focusable[0];
       const last = focusable.at(-1);
       if (!first || !last) {
@@ -79,13 +93,30 @@ export function GuideDialog({
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      previouslyFocused.current?.focus();
+      const previous = previouslyFocused.current;
+      if (previous && previous !== document.body && previous.isConnected) {
+        previous.focus();
+        return;
+      }
+      const fallback = document.getElementById("screen-title");
+      if (fallback instanceof HTMLElement && fallback.isConnected) fallback.focus();
     };
-  }, [onClose]);
+  }, [requestClose]);
 
   const finish = () => {
     onGoToScreen(screen);
-    onClose();
+    requestClose();
+  };
+
+  const moveTab = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const nextMode: GuideMode = mode === "orientation" ? "module" : "orientation";
+    onModeChange(nextMode);
+    const nextTab = nextMode === "orientation"
+      ? orientationTabRef.current
+      : moduleTabRef.current;
+    nextTab?.focus();
   };
 
   const dialogTitle = mode === "orientation"
@@ -97,7 +128,7 @@ export function GuideDialog({
       className="guide-backdrop"
       role="presentation"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) requestClose();
       }}
     >
       <section
@@ -116,70 +147,69 @@ export function GuideDialog({
             ref={closeButtonRef}
             type="button"
             className="close"
-            onClick={onClose}
+            onClick={requestClose}
             aria-label={copy.guide.closeGuide}
           >
             <span aria-hidden="true">×</span>
           </button>
         </header>
 
-        {mode === "orientation" ? (
-          <section
-            id="guide-orientation-panel"
-            className="orientation-guide"
-            role="tabpanel"
-            aria-labelledby="guide-orientation-tab"
-            aria-live="polite"
+        <section
+          id="guide-orientation-panel"
+          className="orientation-guide"
+          role="tabpanel"
+          aria-labelledby="guide-orientation-tab"
+          aria-live="polite"
+          hidden={mode !== "orientation"}
+        >
+          <div
+            className="guide-progress"
+            aria-label={copy.onboarding.stepProgress(
+              step + 1,
+              copy.guide.orientation.length,
+            )}
           >
-            <div
-              className="guide-progress"
-              aria-label={copy.onboarding.stepProgress(
+            {copy.guide.orientation.map((item, index) => (
+              <span
+                key={item.title}
+                className={index <= step ? "active" : ""}
+                aria-current={index === step ? "step" : undefined}
+              />
+            ))}
+          </div>
+          <article className="guide-step">
+            <p className="eyebrow">
+              {copy.onboarding.stepProgress(
                 step + 1,
                 copy.guide.orientation.length,
               )}
-            >
-              {copy.guide.orientation.map((item, index) => (
-                <span
-                  key={item.title}
-                  className={index <= step ? "active" : ""}
-                  aria-current={index === step ? "step" : undefined}
-                />
-              ))}
-            </div>
-            <article className="guide-step">
-              <p className="eyebrow">
-                {copy.onboarding.stepProgress(
-                  step + 1,
-                  copy.guide.orientation.length,
-                )}
-              </p>
-              <h3>{orientationStep.title}</h3>
-              <p>{orientationStep.body}</p>
-            </article>
-          </section>
-        ) : (
-          <section
-            id="guide-module-panel"
-            className="context-guide"
-            role="tabpanel"
-            aria-labelledby="guide-module-tab context-guide-title"
-          >
-            <article>
-              <p className="eyebrow">{copy.guide.why}</p>
-              <h3 id="context-guide-title">{moduleGuide.why}</h3>
-            </article>
-            <article>
-              <p className="eyebrow">{copy.guide.how}</p>
-              <ol>
-                {moduleGuide.how.map((item) => <li key={item}>{item}</li>)}
-              </ol>
-            </article>
-            <article className="done-when">
-              <p className="eyebrow">{copy.guide.doneWhen}</p>
-              <strong>{moduleGuide.doneWhen}</strong>
-            </article>
-          </section>
-        )}
+            </p>
+            <h3>{orientationStep.title}</h3>
+            <p>{orientationStep.body}</p>
+          </article>
+        </section>
+        <section
+          id="guide-module-panel"
+          className="context-guide"
+          role="tabpanel"
+          aria-labelledby="guide-module-tab context-guide-title"
+          hidden={mode !== "module"}
+        >
+          <article>
+            <p className="eyebrow">{copy.guide.why}</p>
+            <h3 id="context-guide-title">{moduleGuide.why}</h3>
+          </article>
+          <article>
+            <p className="eyebrow">{copy.guide.how}</p>
+            <ol>
+              {moduleGuide.how.map((item) => <li key={item}>{item}</li>)}
+            </ol>
+          </article>
+          <article className="done-when">
+            <p className="eyebrow">{copy.guide.doneWhen}</p>
+            <strong>{moduleGuide.doneWhen}</strong>
+          </article>
+        </section>
 
         <footer className="guide-footer">
           <div
@@ -188,22 +218,28 @@ export function GuideDialog({
             aria-label={copy.guide.eyebrow}
           >
             <button
+              ref={orientationTabRef}
               id="guide-orientation-tab"
               type="button"
               role="tab"
               aria-selected={mode === "orientation"}
               aria-controls="guide-orientation-panel"
+              tabIndex={mode === "orientation" ? 0 : -1}
               onClick={() => onModeChange("orientation")}
+              onKeyDown={moveTab}
             >
               {copy.guide.overviewTab}
             </button>
             <button
+              ref={moduleTabRef}
               id="guide-module-tab"
               type="button"
               role="tab"
               aria-selected={mode === "module"}
               aria-controls="guide-module-panel"
+              tabIndex={mode === "module" ? 0 : -1}
               onClick={() => onModeChange("module")}
+              onKeyDown={moveTab}
             >
               {copy.guide.moduleTab(copy.nav[screen])}
             </button>
@@ -230,7 +266,7 @@ export function GuideDialog({
                 )}
               </>
             )}
-            <button type="button" className="button ghost" onClick={onClose}>
+            <button type="button" className="button ghost" onClick={requestClose}>
               {copy.guide.skip}
             </button>
             {(mode === "module" || isLastStep) && (
