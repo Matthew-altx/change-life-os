@@ -133,6 +133,20 @@ test("compact editorial shell protects title measure and responsive navigation",
   assert.doesNotMatch(styles, /@media \(max-width: 780px\)/);
 });
 
+test("compact editorial cards expose more useful first-fold content", () => {
+  assert.match(styles, /\.card-kicker \{[^}]*margin-bottom: 16px/);
+  assert.match(styles, /\.hero-grid \{[^}]*gap: var\(--space-3\)/);
+  assert.match(styles, /\.level-card \{[^}]*min-height: 160px;[^}]*padding: var\(--space-6\)/);
+  assert.match(styles, /\.priority-card \{ padding: var\(--space-6\)/);
+  assert.match(styles, /\.section-block \{ margin-top: 36px; \}/);
+  assert.match(styles, /\.human-grid \{[^}]*gap: var\(--space-3\)/);
+  assert.match(styles, /\.work-grid \{[^}]*margin-top: var\(--space-3\);[^}]*gap: var\(--space-3\)/);
+  assert.match(styles, /\.timer-card, \.quest-preview \{ min-height: 300px; padding: var\(--space-6\); \}/);
+  assert.match(styles, /\.vision-card \{[^}]*min-height: 320px;[^}]*padding: var\(--space-6\)/);
+  assert.match(styles, /\.reset-grid \{[^}]*gap: var\(--space-3\)/);
+  assert.match(styles, /\.review-card, \.protocol-card, \.detox-card \{ padding: var\(--space-6\); \}/);
+});
+
 test("contextual guide is keyboard accessible and reopenable", () => {
   assert.match(guide, /role="dialog"/);
   assert.match(guide, /aria-modal="true"/);
