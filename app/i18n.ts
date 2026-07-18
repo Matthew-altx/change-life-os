@@ -94,6 +94,7 @@ const zhHK = {
     noQuestsNote: "保持空間，唔使急住填滿。",
     timer: {
       eyebrow: "USE YOUR MIND",
+      presetLabel: (minutes: number) => `${minutes}m`,
       running: "而家只需要留喺呢一件事。",
       idle: "關閉雜音，為最重要嘅工作留一段完整時間。",
     },
@@ -244,11 +245,11 @@ const zhHK = {
     next: "下一步",
     start: "開始行動",
     orientation: [
-      { title: "先寫反願景", body: "講清楚你五年後最唔想見到嘅生活，將模糊焦慮變成可見方向。" },
-      { title: "鎖定 90 日主線", body: "只揀一個可以驗證嘅結果，再定義一場你一直逃避嘅 Boss 戰。" },
-      { title: "每日唯一優先", body: "每日先完成最高槓桿行動，再處理低價值工作同外界要求。" },
-      { title: "用任務累積技能", body: "將行動分類為主線、支線或 Boss 戰，同步提升寫作、演講、行銷、銷售。" },
-      { title: "輸出與復盤", body: "用 PIA 將經驗變成內容；晚上用 3-2-1 復盤，定期匯出本機備份。" },
+      { title: "面對代價，鎖定 90 日方向", body: "先寫低乜都唔改嘅代價，再揀一個可驗證嘅 90 日結果，同埋你一直逃避嘅 Boss Fight。" },
+      { title: "每日唯一優先", body: "每日先完成一個最高槓桿行動，再處理低價值工作同外界要求。" },
+      { title: "保護一段專注工作", body: "關閉通知同雜音，為今日最重要嘅工作保留一段完整時間。" },
+      { title: "將經驗變成 Learn–Teach–Sell 輸出", body: "用 Learn、Teach、Sell 推進內容，再用 PIA 補齊 Pain、Insight、Action。" },
+      { title: "用 3-2-1 復盤收尾", body: "寫低三個勝利、兩個教訓同一個聽日意圖，清空心智再結束今日。" },
     ],
     modules: {
       today: {
@@ -374,7 +375,7 @@ const en: LocalizedCopy = {
     priorityPrompt: "Which action would make everything else easier today?",
     completePriority: "Complete today's priority",
     humanEyebrow: "HUMAN 3.0",
-    humanTitle: "Four-dimension check-in",
+    humanTitle: "Four-dimensional check-in",
     humanNote: "You do not need perfect scores. You need honesty.",
     focus: "Deep work",
     focusStart: "Start focus",
@@ -385,6 +386,7 @@ const en: LocalizedCopy = {
     noQuestsNote: "Keep the space. You do not need to fill it.",
     timer: {
       eyebrow: "USE YOUR MIND",
+      presetLabel: (minutes) => `${minutes}m`,
       running: "Stay with this one thing now.",
       idle: "Shut out the noise and protect an uninterrupted block for your most important work.",
     },
@@ -527,19 +529,19 @@ const en: LocalizedCopy = {
     eyebrow: "Usage guide",
     title: "Start Change-Life OS in five steps",
     closeGuide: "Close usage guide",
-    acknowledge: "Got it. Start acting",
+    acknowledge: "Got it",
     why: "Why",
     how: "How",
     doneWhen: "Done when",
     previous: "Previous",
     next: "Next",
-    start: "Start acting",
+    start: "Start now",
     orientation: [
-      { title: "Write your anti-vision", body: "Describe the life you refuse to accept five years from now and turn vague anxiety into direction." },
-      { title: "Lock a 90-day quest", body: "Choose one verifiable outcome and define the Boss Fight you keep avoiding." },
-      { title: "Choose one daily priority", body: "Finish the highest-leverage action before low-value work and outside demands." },
-      { title: "Stack skills through quests", body: "Classify action as a Main, Side or Boss quest while building Writing, Speaking, Marketing and Sales." },
-      { title: "Publish and review", body: "Use PIA to turn experience into content, then close the day with a 3-2-1 review and regular backup." },
+      { title: "Face the cost and set a 90-day direction", body: "Write the cost of staying unchanged, then choose one verifiable 90-day outcome and the Boss Fight you keep avoiding." },
+      { title: "Choose one daily priority", body: "Finish one highest-leverage action before low-value work and outside demands." },
+      { title: "Protect a focused work session", body: "Turn off notifications and noise, then protect an uninterrupted block for today's most important work." },
+      { title: "Turn experience into Learn–Teach–Sell output", body: "Move content through Learn, Teach and Sell, then use PIA to complete Pain, Insight and Action." },
+      { title: "Close with a 3-2-1 review", body: "Record three wins, two lessons and one intention for tomorrow so you can clear your mind and close the day." },
     ],
     modules: {
       today: {
