@@ -78,7 +78,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .language-switch { min-height: 44px; padding: 4px 8px; display: flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid currentColor; border-radius: 12px; color: inherit; }
 .language-switch button { min-width: 44px; min-height: 44px; border: 0; border-radius: 8px; color: inherit; background: transparent; font-weight: 800; }
 .language-switch button[aria-pressed="true"] { color: var(--white); background: var(--green); }
-.sidebar .language-switch button[aria-pressed="true"], .mobile-utility .language-switch button[aria-pressed="true"] { color: var(--green); background: var(--white); }
+.sidebar .language-switch button[aria-pressed="true"], .mobile-utility .language-switch button[aria-pressed="true"], .onboarding-utility .language-switch button[aria-pressed="true"] { color: var(--green); background: var(--white); }
 .sidebar-progress p { margin: 0 0 5px; color: var(--gold); font-size: 10px; letter-spacing: .15em; }
 .sidebar-progress strong { display: block; font-size: 14px; }
 .sidebar-progress span { display: block; margin-top: 7px; color: #9db0a7; font-size: 11px; line-height: 1.5; }

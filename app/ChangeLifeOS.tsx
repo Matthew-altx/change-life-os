@@ -24,6 +24,7 @@ import { formatDate, getCopy, type Copy, type Locale, type Screen } from "./i18n
 import {
   loadUiPreferences,
   saveUiPreferences,
+  withLocale,
   type UiPreferences,
 } from "./uiPreferences";
 
@@ -394,7 +395,7 @@ export default function ChangeLifeOS() {
   }, [hydrated, preferences]);
 
   const update = useMemo(() => (fn: (current: AppState) => AppState) => setState((current) => fn(current)), []);
-  const setLocale = (locale: Locale) => setPreferences((current) => ({ ...current, locale }));
+  const setLocale = (locale: Locale) => setPreferences((current) => withLocale(current, locale));
   const progress = calculateProgress(state.quests);
   const streak = calculateStreak(state.activeDates);
 

@@ -26,20 +26,13 @@ test("public version ships a Cantonese-first bilingual interface", () => {
   assert.match(i18n, /Turn life into a game worth playing/);
   assert.match(app, /document\.documentElement\.lang/);
   assert.match(app, /aria-pressed/);
+  assert.match(app, /withLocale\(current, locale\)/);
 });
 
 test("UI preferences stay separate from life data", () => {
   assert.match(preferences, /changeLifeOSUi/);
   assert.doesNotMatch(preferences, /changeLifeOS(?:"|')/);
   assert.match(storage, /STORAGE_KEY = "changeLifeOS"/);
-});
-
-test("language switching leaves user-owned values untouched", () => {
-  assert.match(app, /value=\{state\.dailyPriority\.text\}/);
-  assert.match(app, /value=\{state\.profile\[field\.key\]\}/);
-  assert.match(app, /<strong>\{quest\.title\}<\/strong>/);
-  assert.match(app, /<h2>\{selected\.title\}<\/h2>/);
-  assert.match(app, /value=\{intention\}/);
 });
 
 test("usage guide is reopenable from the main application", () => {

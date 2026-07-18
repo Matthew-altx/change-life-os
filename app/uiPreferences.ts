@@ -7,6 +7,11 @@ export type UiPreferences = {
   guideSeen: boolean;
 };
 
+export const withLocale = (
+  current: Readonly<UiPreferences>,
+  locale: Locale,
+): UiPreferences => ({ locale, guideSeen: current.guideSeen });
+
 const defaults = (): UiPreferences => ({ locale: "zh-HK", guideSeen: false });
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
