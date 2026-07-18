@@ -441,7 +441,7 @@ const en: Copy = {
   },
   content: {
     eyebrow: "LEARN · TEACH · SELL",
-    title: "Turn what you learn into a public asset.",
+    title: "Make learning a public asset.",
     intro: "Start with a real problem, build an insight, teach it publicly, then package the value into an exchangeable result.",
     capture: "Capture",
     capturePrompt: "Capture a content idea…",

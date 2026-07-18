@@ -62,6 +62,7 @@
 ### Measured responsive evidence
 
 - **1440 × 1000, Today:** title is one line at 46px; the HUMAN section starts at 439.49px and is visible in the first viewport; document and viewport widths both equal 1440px.
+- **1440 × 1000, English Content:** the shortened translation `Make learning a public asset.` stays on one line beside the capture control without reducing the global title scale.
 - **1280 × 900, Vision:** `用願景拉動自己，唔係靠意志力推。` is one line; its 45.05px box height is below 1.3 × the 40.96px computed font size; document and viewport widths both equal 1280px.
 - **1024 × 768, Vision:** title remains one line at 38px and document width equals 1024px.
 - **900 × 900, Vision:** sidebar is hidden, main left margin is 0px, bottom navigation is visible, both 424px card columns remain inside the 900px viewport, and there is no horizontal overflow.
