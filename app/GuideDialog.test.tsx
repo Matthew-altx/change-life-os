@@ -62,6 +62,7 @@ beforeEach(() => {
 afterEach(() => {
   if (root) act(() => root?.unmount());
   root = null;
+  vi.restoreAllMocks();
   document.body.innerHTML = "";
 });
 
@@ -141,7 +142,7 @@ describe("GuideDialog DOM behaviour", () => {
     expect(document.activeElement).toBe(last);
   });
 
-  it("closes once on Escape and removes its listener", () => {
+  it("closes only once when Escape fires repeatedly", () => {
     const onClose = vi.fn();
     mount(<ClosingHarness onClose={onClose} />);
 
@@ -155,6 +156,22 @@ describe("GuideDialog DOM behaviour", () => {
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
     });
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes the exact keydown handler it registered", () => {
+    const addListener = vi.spyOn(document, "addEventListener");
+    const removeListener = vi.spyOn(document, "removeEventListener");
+    mount(<ModeHarness />);
+    const keydownRegistration = addListener.mock.calls.find(
+      ([eventType]) => eventType === "keydown",
+    );
+    const keydownHandler = keydownRegistration?.[1];
+
+    expect(keydownHandler).toBeTypeOf("function");
+    act(() => root?.unmount());
+    root = null;
+
+    expect(removeListener).toHaveBeenCalledWith("keydown", keydownHandler);
   });
 
   it("ignores dialog presses and closes on the backdrop", () => {
