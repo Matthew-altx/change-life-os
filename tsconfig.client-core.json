@@ -6,12 +6,16 @@
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "skipLibCheck": true
   },
   "include": [
     "app/i18n.ts",
     "app/i18n.test.ts",
     "app/uiPreferences.ts",
-    "app/uiPreferences.test.ts"
+    "app/uiPreferences.test.ts",
+    "app/domain.ts",
+    "app/storage.ts",
+    "app/ChangeLifeOS.tsx"
   ]
 }

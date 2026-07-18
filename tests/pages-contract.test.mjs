@@ -3,6 +3,8 @@ import fs from "node:fs";
 import test from "node:test";
 
 const app = fs.readFileSync("app/ChangeLifeOS.tsx", "utf8");
+const i18n = fs.readFileSync("app/i18n.ts", "utf8");
+const preferences = fs.readFileSync("app/uiPreferences.ts", "utf8");
 const storage = fs.readFileSync("app/storage.ts", "utf8");
 const workflow = fs.readFileSync(".github/workflows/pages.yml", "utf8");
 const viteConfig = fs.readFileSync("vite.pages.config.ts", "utf8");
@@ -18,9 +20,31 @@ test("public version keeps user data in browser storage", () => {
   assert.doesNotMatch(storage, /fetch\(|XMLHttpRequest|google\.script\.run/);
 });
 
+test("public version ships a Cantonese-first bilingual interface", () => {
+  assert.match(i18n, /"zh-HK"/);
+  assert.match(i18n, /\ben\b/);
+  assert.match(i18n, /Turn life into a game worth playing/);
+  assert.match(app, /document\.documentElement\.lang/);
+  assert.match(app, /aria-pressed/);
+});
+
+test("UI preferences stay separate from life data", () => {
+  assert.match(preferences, /changeLifeOSUi/);
+  assert.doesNotMatch(preferences, /changeLifeOS(?:"|')/);
+  assert.match(storage, /STORAGE_KEY = "changeLifeOS"/);
+});
+
+test("language switching leaves user-owned values untouched", () => {
+  assert.match(app, /value=\{state\.dailyPriority\.text\}/);
+  assert.match(app, /value=\{state\.profile\[field\.key\]\}/);
+  assert.match(app, /<strong>\{quest\.title\}<\/strong>/);
+  assert.match(app, /<h2>\{selected\.title\}<\/h2>/);
+  assert.match(app, /value=\{intention\}/);
+});
+
 test("usage guide is reopenable from the main application", () => {
-  assert.match(app, /GUIDE_STEPS/);
-  assert.match(app, /使用指南/);
+  assert.match(app, /copy\.guide\.orientation/);
+  assert.match(app, /copy\.utility\.guide/);
   assert.match(app, /setGuideOpen\(true\)/);
 });
 
