@@ -8,5 +8,10 @@
     "moduleResolution": "Bundler",
     "skipLibCheck": true
   },
-  "include": ["app/i18n.ts", "app/i18n.test.ts"]
+  "include": [
+    "app/i18n.ts",
+    "app/i18n.test.ts",
+    "app/uiPreferences.ts",
+    "app/uiPreferences.test.ts"
+  ]
 }
