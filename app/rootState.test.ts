@@ -78,6 +78,24 @@ describe("root state transitions", () => {
     expect(next.preferences).toBe(preferences);
   });
 
+  it("marks the guide as seen without changing locale or user data", () => {
+    const appState = representativeAppState();
+    const snapshot = structuredClone(appState);
+    const preferences = Object.freeze({ locale: "en" as const, guideSeen: false });
+    const state: RootState = { appState, preferences };
+
+    const next = rootReducer(state, {
+      type: "set-guide-seen",
+      guideSeen: true,
+    });
+
+    expect(next.appState).toBe(appState);
+    expect(next.appState).toEqual(snapshot);
+    expect(next.preferences).toEqual({ locale: "en", guideSeen: true });
+    expect(next.preferences).not.toBe(preferences);
+    expect(preferences).toEqual({ locale: "en", guideSeen: false });
+  });
+
   it("hydrates app state and preferences together", () => {
     const appState = representativeAppState();
     const preferences = Object.freeze({ locale: "en" as const, guideSeen: true });

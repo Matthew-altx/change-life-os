@@ -237,6 +237,22 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .guide-list h3 { margin: 1px 0 5px; font-size: 15px; }
 .guide-list p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .guide-modal footer { margin-top: 22px; display: flex; justify-content: flex-end; }
+.guide-progress { margin: 26px 0 20px; display: flex; gap: 8px; }
+.guide-progress span { height: 5px; flex: 1; border-radius: 999px; background: #d9ddd8; }
+.guide-progress span.active { background: var(--orange); }
+.guide-step { min-height: 190px; padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: white; }
+.guide-step h3 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 26px; }
+.guide-step > p:last-child { color: var(--muted); line-height: 1.7; }
+.context-guide { margin-top: 26px; display: grid; gap: 12px; }
+.context-guide article { padding: 20px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+.context-guide h3, .context-guide ol { margin-bottom: 0; }
+.context-guide li { margin-top: 8px; line-height: 1.55; }
+.context-guide .done-when { border-color: rgba(218,129,52,.35); background: #f8efe2; }
+.guide-footer { align-items: flex-end; justify-content: space-between !important; gap: 18px; flex-wrap: wrap; }
+.guide-tabs { display: inline-flex; padding: 4px; border-radius: 12px; background: #e8e8e1; }
+.guide-tabs button { min-height: 42px; padding: 0 14px; border: 0; border-radius: 9px; color: var(--muted); background: transparent; font-weight: 750; }
+.guide-tabs button[aria-selected="true"] { color: white; background: var(--green); }
+.guide-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 
 @media (max-width: 1050px) {
   .human-grid { grid-template-columns: repeat(2, 1fr); }
@@ -282,6 +298,9 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
   .privacy-note { text-align: center; }
   .guide-backdrop { padding: 12px; }
   .guide-modal { max-height: calc(100vh - 24px); padding: 24px 18px; border-radius: 20px; }
+  .guide-footer { align-items: stretch; flex-direction: column; }
+  .guide-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+  .guide-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 460px) {

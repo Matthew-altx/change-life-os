@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   calculateProgress,
   calculateStreak,
@@ -26,6 +26,7 @@ import {
   saveUiPreferences,
 } from "./uiPreferences";
 import { initialRootState, rootReducer } from "./rootState";
+import { GuideDialog, type GuideMode } from "./GuideDialog";
 
 const NAV: { id: Screen; mark: string }[] = [
   { id: "today", mark: "01" },
@@ -132,25 +133,6 @@ function Onboarding({ onFinish, copy, locale, setLocale }: {
       </section>
       <p className="privacy-note">{copy.onboarding.privacy}</p>
     </main>
-  );
-}
-
-function GuideModal({ onClose, copy }: { onClose: () => void; copy: Copy }) {
-  return (
-    <div className="guide-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <section className="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title">
-        <header>
-          <div><p className="eyebrow">{copy.guide.eyebrow}</p><h2 id="guide-title">{copy.guide.title}</h2></div>
-          <button className="close" onClick={onClose} aria-label={copy.guide.closeGuide}>×</button>
-        </header>
-        <div className="guide-list">
-          {copy.guide.orientation.map((item, index) => (
-            <article key={item.title}><span>{index + 1}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></article>
-          ))}
-        </div>
-        <footer><button className="button primary" onClick={onClose}>{copy.guide.acknowledge}</button></footer>
-      </section>
-    </div>
   );
 }
 
@@ -370,17 +352,23 @@ export default function ChangeLifeOS() {
   const [screen, setScreen] = useState<Screen>("today");
   const [notice, setNotice] = useState<keyof Copy["notices"] | null>(null);
   const [guideOpen, setGuideOpen] = useState(false);
+  const [guideMode, setGuideMode] = useState<GuideMode>("orientation");
   const copy = getCopy(preferences.locale);
 
   useEffect(() => {
     let cancelled = false;
     window.queueMicrotask(() => {
       if (!cancelled) {
+        const storedPreferences = loadUiPreferences(window.localStorage);
         dispatch({
           type: "hydrate",
           appState: loadState(window.localStorage),
-          preferences: loadUiPreferences(window.localStorage),
+          preferences: storedPreferences,
         });
+        if (!storedPreferences.guideSeen) {
+          setGuideMode("orientation");
+          setGuideOpen(true);
+        }
         setHydrated(true);
       }
     });
@@ -398,6 +386,14 @@ export default function ChangeLifeOS() {
 
   const update = useMemo(() => (fn: (current: AppState) => AppState) => dispatch({ type: "update-app", update: fn }), []);
   const setLocale = (locale: Locale) => dispatch({ type: "set-locale", locale });
+  const closeGuide = useCallback(() => {
+    dispatch({ type: "set-guide-seen", guideSeen: true });
+    setGuideOpen(false);
+  }, []);
+  const openModuleGuide = useCallback(() => {
+    setGuideMode("module");
+    setGuideOpen(true);
+  }, []);
   const progress = calculateProgress(state.quests);
   const streak = calculateStreak(state.activeDates);
 
@@ -424,13 +420,22 @@ export default function ChangeLifeOS() {
     if (window.confirm(copy.confirmations.clearAll)) update(() => createInitialState());
   };
 
-  return <Shell screen={screen} setScreen={setScreen} level={progress.level} streak={streak} onGuide={() => setGuideOpen(true)} copy={copy} locale={preferences.locale} setLocale={setLocale}>
+  return <Shell screen={screen} setScreen={setScreen} level={progress.level} streak={streak} onGuide={openModuleGuide} copy={copy} locale={preferences.locale} setLocale={setLocale}>
     {notice && <button className="notice" aria-label={copy.common.close} onClick={() => setNotice(null)} role="status">{copy.notices[notice]}<span>×</span></button>}
     {screen === "today" && <Today state={state} update={update} copy={copy} locale={preferences.locale} />}
     {screen === "vision" && <Vision state={state} update={update} copy={copy} />}
     {screen === "quests" && <Quests state={state} update={update} copy={copy} />}
     {screen === "content" && <Content state={state} update={update} copy={copy} />}
     {screen === "reset" && <Reset state={state} update={update} onImport={importData} onClear={clear} copy={copy} />}
-    {guideOpen && <GuideModal onClose={() => setGuideOpen(false)} copy={copy} />}
+    {guideOpen && (
+      <GuideDialog
+        copy={copy}
+        screen={screen}
+        mode={guideMode}
+        onModeChange={setGuideMode}
+        onClose={closeGuide}
+        onGoToScreen={setScreen}
+      />
+    )}
   </Shell>;
 }

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 const app = fs.readFileSync("app/ChangeLifeOS.tsx", "utf8");
+const guide = fs.readFileSync("app/GuideDialog.tsx", "utf8");
 const i18n = fs.readFileSync("app/i18n.ts", "utf8");
 const preferences = fs.readFileSync("app/uiPreferences.ts", "utf8");
 const rootState = fs.readFileSync("app/rootState.ts", "utf8");
@@ -38,9 +39,26 @@ test("UI preferences stay separate from life data", () => {
 });
 
 test("usage guide is reopenable from the main application", () => {
-  assert.match(app, /copy\.guide\.orientation/);
   assert.match(app, /copy\.utility\.guide/);
   assert.match(app, /setGuideOpen\(true\)/);
+});
+
+test("contextual guide is keyboard accessible and reopenable", () => {
+  assert.match(guide, /role="dialog"/);
+  assert.match(guide, /aria-modal="true"/);
+  assert.match(guide, /event\.key === "Escape"/);
+  assert.match(guide, /event\.key !== "Tab"/);
+  assert.match(guide, /event\.shiftKey/);
+  assert.match(guide, /focus\(\)/);
+  assert.match(guide, /previouslyFocused/);
+  assert.match(guide, /copy\.guide\.modules\[screen\]/);
+  assert.match(guide, /event\.target === event\.currentTarget/);
+  assert.match(app, /setGuideOpen\(true\)/);
+  assert.match(app, /type: "set-guide-seen"/);
+  assert.match(app, /if \(!storedPreferences\.guideSeen\)/);
+  assert.match(app, /setGuideMode\("orientation"\)/);
+  assert.match(app, /setGuideMode\("module"\)/);
+  assert.match(rootState, /case "set-guide-seen"/);
 });
 
 test("workflow has least-privilege GitHub Pages deployment permissions", () => {

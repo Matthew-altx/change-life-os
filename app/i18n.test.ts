@@ -95,6 +95,8 @@ describe("locale copy", () => {
 
   it("smoke-tests every dynamic label helper", () => {
     const expectedPaths = [
+      "guide.moduleTab",
+      "guide.moduleTitle",
       "human.scoreLabel",
       "onboarding.stepProgress",
       "quests.typeOption",
@@ -119,6 +121,8 @@ describe("locale copy", () => {
       COPY["zh-HK"].resetPage.review.winPlaceholder(1),
       COPY["zh-HK"].resetPage.review.lessonPlaceholder(2),
       COPY["zh-HK"].human.scoreLabel("心智", 4),
+      COPY["zh-HK"].guide.moduleTab("今日"),
+      COPY["zh-HK"].guide.moduleTitle("今日"),
     ]).toEqual([
       "第 2 步，共 4 步",
       "LEVEL 3",
@@ -129,6 +133,8 @@ describe("locale copy", () => {
       "1. 今日有咩值得保留？",
       "2. 今日學到咩？",
       "心智 4 分",
+      "今日指南",
+      "今日：點解做、點做、完成標準",
     ]);
 
     expect([
@@ -141,6 +147,8 @@ describe("locale copy", () => {
       COPY.en.resetPage.review.winPlaceholder(1),
       COPY.en.resetPage.review.lessonPlaceholder(2),
       COPY.en.human.scoreLabel("Mind", 4),
+      COPY.en.guide.moduleTab("Today"),
+      COPY.en.guide.moduleTitle("Today"),
     ]).toEqual([
       "Step 2 of 4",
       "LEVEL 3",
@@ -151,6 +159,8 @@ describe("locale copy", () => {
       "1. What from today is worth keeping?",
       "2. What did you learn today?",
       "Mind: 4 points",
+      "Today guide",
+      "Today: why, how and done when",
     ]);
   });
 
