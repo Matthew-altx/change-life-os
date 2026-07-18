@@ -31,7 +31,7 @@
 - Verified language switching, reload persistence, and unchanged user-entered quest content.
 - Verified first-use guide, module guide, keyboard focus trap, Escape close, focus restoration, and guide tab keyboard navigation.
 - Verified desktop rail and mobile bottom navigation, Content capture action, and deep-work timer start/pause.
-- Verified score controls have at least 44 × 44 px targets and visible high-contrast focus states. At 800 px the HUMAN grid is a 512 px single column; all 470 px score rows remain inside their 760 px card edge and the document width remains 800 px.
+- Verified score controls have at least 44 × 44 px targets and visible high-contrast focus states. In the pre-compact narrow-layout pass, the 800px HUMAN grid used one column and all score rows stayed inside their card; the current compact pass supersedes that layout with the 700px stack rule documented below.
 - Verified the guide fits within a 390 × 844 viewport in Cantonese and English.
 - Checked the active browser console after the final mobile pass: no errors or warnings.
 
