@@ -11,6 +11,19 @@ const structuralShape = (value: unknown): unknown => {
   return typeof value;
 };
 
+const functionPaths = (value: unknown, path: string[] = []): string[] => {
+  if (typeof value === "function") return [path.join(".")];
+  if (Array.isArray(value)) {
+    return value.flatMap((child, index) => functionPaths(child, [...path, String(index)]));
+  }
+  if (value !== null && typeof value === "object") {
+    return Object.entries(value).flatMap(([key, child]) =>
+      functionPaths(child, [...path, key]),
+    );
+  }
+  return [];
+};
+
 describe("locale copy", () => {
   it("falls back to Cantonese for unsupported values", () => {
     expect(normalizeLocale("zh-HK")).toBe("zh-HK");
@@ -26,6 +39,7 @@ describe("locale copy", () => {
       Object.keys(COPY["zh-HK"].guide.modules),
     );
     expect(structuralShape(COPY.en)).toEqual(structuralShape(COPY["zh-HK"]));
+    expect(Object.isFrozen(COPY)).toBe(true);
   });
 
   it("returns complete language-specific core labels", () => {
@@ -79,9 +93,77 @@ describe("locale copy", () => {
     expect(en.resetPage.detox.title).toContain("Monk Mode");
   });
 
+  it("smoke-tests every dynamic label helper", () => {
+    const expectedPaths = [
+      "human.scoreLabel",
+      "onboarding.stepProgress",
+      "quests.typeOption",
+      "resetPage.review.lessonPlaceholder",
+      "resetPage.review.winPlaceholder",
+      "today.levelLabel",
+      "today.streak",
+      "today.timer.presetLabel",
+      "today.xpRemaining",
+    ];
+
+    expect(functionPaths(COPY["zh-HK"]).sort()).toEqual(expectedPaths);
+    expect(functionPaths(COPY.en).sort()).toEqual(expectedPaths);
+
+    expect([
+      COPY["zh-HK"].onboarding.stepProgress(2, 4),
+      COPY["zh-HK"].today.levelLabel(3),
+      COPY["zh-HK"].today.xpRemaining(120),
+      COPY["zh-HK"].today.streak(7),
+      COPY["zh-HK"].today.timer.presetLabel(25),
+      COPY["zh-HK"].quests.typeOption("主線", 50),
+      COPY["zh-HK"].resetPage.review.winPlaceholder(1),
+      COPY["zh-HK"].resetPage.review.lessonPlaceholder(2),
+      COPY["zh-HK"].human.scoreLabel("心智", 4),
+    ]).toEqual([
+      "第 2 步，共 4 步",
+      "LEVEL 3",
+      "距離下一級仲有 120 XP",
+      "7 日連續行動",
+      "25m",
+      "主線 · 50 XP",
+      "1. 今日有咩值得保留？",
+      "2. 今日學到咩？",
+      "心智 4 分",
+    ]);
+
+    expect([
+      COPY.en.onboarding.stepProgress(2, 4),
+      COPY.en.today.levelLabel(3),
+      COPY.en.today.xpRemaining(120),
+      COPY.en.today.streak(7),
+      COPY.en.today.timer.presetLabel(25),
+      COPY.en.quests.typeOption("Main", 50),
+      COPY.en.resetPage.review.winPlaceholder(1),
+      COPY.en.resetPage.review.lessonPlaceholder(2),
+      COPY.en.human.scoreLabel("Mind", 4),
+    ]).toEqual([
+      "Step 2 of 4",
+      "LEVEL 3",
+      "120 XP to the next level",
+      "7-day action streak",
+      "25m",
+      "Main · 50 XP",
+      "1. What from today is worth keeping?",
+      "2. What did you learn today?",
+      "Mind: 4 points",
+    ]);
+  });
+
   it("formats dates using the active locale", () => {
-    const date = new Date("2026-07-18T04:00:00.000Z");
-    expect(formatDate("zh-HK", date)).toMatch(/7月|七月/);
-    expect(formatDate("en", date)).toMatch(/July/);
+    const date = new Date(2026, 6, 18, 12);
+    const zhDate = formatDate("zh-HK", date);
+    const enDate = formatDate("en", date);
+
+    expect(zhDate).toMatch(/7月|七月/);
+    expect(zhDate).toMatch(/18/);
+    expect(zhDate).toMatch(/星期六|週六|周六/);
+    expect(enDate).toMatch(/July/);
+    expect(enDate).toMatch(/18/);
+    expect(enDate).toMatch(/Saturday/);
   });
 });

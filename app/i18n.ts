@@ -285,15 +285,15 @@ type Localized<T> = T extends (...args: infer Args) => unknown
   ? (...args: Args) => string
   : T extends string
     ? string
-    : T extends readonly (infer Item)[]
-      ? readonly Localized<Item>[]
+    : T extends readonly unknown[]
+      ? { readonly [Key in keyof T]: Localized<T[Key]> }
       : T extends Record<string, unknown>
         ? { readonly [Key in keyof T]: Localized<T[Key]> }
         : T;
 
-type LocalizedCopy = Localized<typeof zhHK>;
+export type Copy = Localized<typeof zhHK>;
 
-const en: LocalizedCopy = {
+const en: Copy = {
   localeName: "English",
   brand: {
     name: "CHANGE-LIFE",
@@ -573,12 +573,10 @@ const en: LocalizedCopy = {
   },
 };
 
-export const COPY: Record<Locale, LocalizedCopy> = {
+export const COPY: Readonly<Record<Locale, Copy>> = Object.freeze({
   "zh-HK": zhHK,
   en,
-};
-
-export type Copy = (typeof COPY)["zh-HK"];
+});
 
 export const normalizeLocale = (value: unknown): Locale => value === "en" ? "en" : "zh-HK";
 
