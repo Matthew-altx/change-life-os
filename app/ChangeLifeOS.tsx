@@ -18,6 +18,7 @@ import {
   type Quest,
   type QuestType,
   type Skill,
+  type GardenThemeId,
 } from "./domain";
 import { exportState, loadState, parseImportedState, saveState } from "./storage";
 import { formatDate, getCopy, type Copy, type Locale, type Screen } from "./i18n";
@@ -27,6 +28,8 @@ import {
 } from "./uiPreferences";
 import { initialRootState, rootReducer } from "./rootState";
 import { GuideDialog, type GuideMode } from "./GuideDialog";
+import { GrowthGarden } from "./GrowthGarden";
+import { ThemeShop } from "./ThemeShop";
 
 const NAV: { id: Screen; mark: string }[] = [
   { id: "today", mark: "01" },
@@ -190,6 +193,7 @@ function Today({ state, update, copy, locale }: { state: AppState; update: (fn: 
   const progress = calculateProgress(state.quests);
   const streak = calculateStreak(state.activeDates);
   const [seconds, setSeconds] = useState(() => remainingSeconds(state.timer));
+  const [previewTheme, setPreviewTheme] = useState<GardenThemeId | null>(null);
   const running = state.timer.runningSince !== null && seconds > 0;
 
   useEffect(() => {
@@ -252,6 +256,9 @@ function Today({ state, update, copy, locale }: { state: AppState; update: (fn: 
           })}
         </div>
       </section>
+
+      <GrowthGarden state={state} update={update} copy={copy} locale={locale} themeOverride={previewTheme} />
+      <ThemeShop state={state} update={update} copy={copy} previewTheme={previewTheme} setPreviewTheme={setPreviewTheme} />
 
       <section className="work-grid">
         <article className="card timer-card">

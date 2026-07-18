@@ -1,6 +1,12 @@
 export type QuestType = "main" | "side" | "boss";
 export type Skill = "writing" | "speaking" | "marketing" | "sales";
 export type ContentStage = "idea" | "learn" | "teach" | "sell";
+export type LifeDimension = "mind" | "body" | "spirit" | "vocation";
+export type GrowthQuestChoice = "short" | "medium" | "custom";
+export type GrowthCycleStatus = "active" | "completed";
+export type GardenThemeId = "classic" | "first-light-garden";
+
+export type DimensionScores = Record<LifeDimension, number>;
 
 export type Quest = {
   id: string;
@@ -34,8 +40,38 @@ export type TimerState = {
   runningSince: number | null;
 };
 
+export type DailyCheckIn = {
+  date: string;
+  scores: DimensionScores;
+  suggestedDimension: LifeDimension;
+  selectedDimension: LifeDimension;
+  questChoice: GrowthQuestChoice;
+  questId: string | null;
+  customAction: string;
+  completedAt: string | null;
+};
+
+export type GrowthCycle = {
+  startedOn: string | null;
+  completedDates: string[];
+  status: GrowthCycleStatus;
+  completedOn: string | null;
+};
+
+export type GardenState = {
+  growth: Record<LifeDimension, number>;
+  guardianStage: 0 | 1 | 2 | 3 | 4;
+  activeThemeId: GardenThemeId;
+};
+
+export type GrowthState = {
+  checkIns: DailyCheckIn[];
+  cycle: GrowthCycle;
+  garden: GardenState;
+};
+
 export type AppState = {
-  version: 1;
+  version: 2;
   profile: {
     antiVision: string;
     vision: string;
@@ -44,13 +80,7 @@ export type AppState = {
     bossFight: string;
     onboarded: boolean;
   };
-  humanScores: {
-    mind: number;
-    body: number;
-    spirit: number;
-    vocation: number;
-    updatedAt: string;
-  };
+  humanScores: DimensionScores & { updatedAt: string };
   dailyPriority: { date: string; text: string; completed: boolean };
   quests: Quest[];
   contentItems: ContentItem[];
@@ -63,9 +93,13 @@ export type AppState = {
   };
   activeDates: string[];
   timer: TimerState;
+  growth: GrowthState;
 };
 
 export const SKILLS: Skill[] = ["writing", "speaking", "marketing", "sales"];
+export const LIFE_DIMENSIONS: LifeDimension[] = ["mind", "body", "spirit", "vocation"];
+export const CYCLE_LENGTH_DAYS = 14;
+export const CYCLE_TARGET_DAYS = 7;
 
 export const localDate = (date = new Date()) => {
   const year = date.getFullYear();
@@ -74,8 +108,23 @@ export const localDate = (date = new Date()) => {
   return `${year}-${month}-${day}`;
 };
 
+export const createInitialGrowthState = (): GrowthState => ({
+  checkIns: [],
+  cycle: {
+    startedOn: null,
+    completedDates: [],
+    status: "active",
+    completedOn: null,
+  },
+  garden: {
+    growth: { mind: 0, body: 0, spirit: 0, vocation: 0 },
+    guardianStage: 0,
+    activeThemeId: "classic",
+  },
+});
+
 export const createInitialState = (today = localDate()): AppState => ({
-  version: 1,
+  version: 2,
   profile: {
     antiVision: "",
     vision: "",
@@ -97,6 +146,7 @@ export const createInitialState = (today = localDate()): AppState => ({
   },
   activeDates: [],
   timer: { durationSeconds: 3000, remainingSeconds: 3000, runningSince: null },
+  growth: createInitialGrowthState(),
 });
 
 export const questXp = (type: QuestType) => ({ side: 20, main: 50, boss: 100 })[type];
@@ -127,6 +177,12 @@ const dayBefore = (value: string) => {
   return date.toISOString().slice(0, 10);
 };
 
+export const calendarDayDiff = (from: string, to: string) => {
+  const start = Date.parse(`${from}T12:00:00Z`);
+  const end = Date.parse(`${to}T12:00:00Z`);
+  return Math.floor((end - start) / 86_400_000);
+};
+
 export const calculateStreak = (dates: string[], today = localDate()) => {
   const active = new Set(dates);
   let cursor = today;
@@ -136,6 +192,101 @@ export const calculateStreak = (dates: string[], today = localDate()) => {
     cursor = dayBefore(cursor);
   }
   return streak;
+};
+
+export const guardianStageForSeeds = (seedCount: number): GardenState["guardianStage"] => {
+  if (seedCount >= 7) return 4;
+  if (seedCount >= 5) return 3;
+  if (seedCount >= 3) return 2;
+  if (seedCount >= 1) return 1;
+  return 0;
+};
+
+export const isCycleExpired = (cycle: GrowthCycle, today: string) =>
+  cycle.startedOn !== null && calendarDayDiff(cycle.startedOn, today) >= CYCLE_LENGTH_DAYS;
+
+export const rotateGrowthCycle = (growth: GrowthState, today: string): GrowthState => {
+  const hasToday = growth.checkIns.some((entry) => entry.date === today);
+  const shouldRotate = !hasToday && (
+    growth.cycle.status === "completed" || isCycleExpired(growth.cycle, today)
+  );
+  if (!shouldRotate && growth.cycle.startedOn !== null) return growth;
+
+  return {
+    ...growth,
+    cycle: {
+      startedOn: today,
+      completedDates: [],
+      status: "active",
+      completedOn: null,
+    },
+  };
+};
+
+export const suggestLifeDimension = (
+  scores: DimensionScores,
+  gardenGrowth: Record<LifeDimension, number>,
+  checkIns: DailyCheckIn[],
+): LifeDimension => {
+  const lastSelected = new Map<LifeDimension, number>();
+  checkIns.forEach((entry, index) => lastSelected.set(entry.selectedDimension, index));
+
+  return [...LIFE_DIMENSIONS].sort((left, right) => {
+    if (scores[left] !== scores[right]) return scores[left] - scores[right];
+    if (gardenGrowth[left] !== gardenGrowth[right]) return gardenGrowth[left] - gardenGrowth[right];
+    const leftLast = lastSelected.get(left) ?? -1;
+    const rightLast = lastSelected.get(right) ?? -1;
+    if (leftLast !== rightLast) return leftLast - rightLast;
+    return LIFE_DIMENSIONS.indexOf(left) - LIFE_DIMENSIONS.indexOf(right);
+  })[0];
+};
+
+export const saveDailyCheckIn = (
+  growth: GrowthState,
+  checkIn: DailyCheckIn,
+): GrowthState => {
+  const rotated = rotateGrowthCycle(growth, checkIn.date);
+  const checkIns = [
+    ...rotated.checkIns.filter((entry) => entry.date !== checkIn.date),
+    checkIn,
+  ];
+  return { ...rotated, checkIns };
+};
+
+export const completeDailyGrowth = (
+  growth: GrowthState,
+  date: string,
+  completedAt = new Date().toISOString(),
+): GrowthState => {
+  const rotated = rotateGrowthCycle(growth, date);
+  const entry = rotated.checkIns.find((item) => item.date === date);
+  if (!entry || entry.completedAt || rotated.cycle.completedDates.includes(date)) return rotated;
+
+  const completedDates = [...rotated.cycle.completedDates, date].sort();
+  const totalSeeds = Object.values(rotated.garden.growth).reduce((sum, value) => sum + value, 0) + 1;
+  const cycleComplete = completedDates.length >= CYCLE_TARGET_DAYS;
+  const growthByDimension = {
+    ...rotated.garden.growth,
+    [entry.selectedDimension]: rotated.garden.growth[entry.selectedDimension] + 1,
+  };
+
+  return {
+    ...rotated,
+    checkIns: rotated.checkIns.map((item) =>
+      item.date === date ? { ...item, completedAt } : item,
+    ),
+    cycle: {
+      ...rotated.cycle,
+      completedDates,
+      status: cycleComplete ? "completed" : "active",
+      completedOn: cycleComplete ? date : null,
+    },
+    garden: {
+      ...rotated.garden,
+      growth: growthByDimension,
+      guardianStage: guardianStageForSeeds(totalSeeds),
+    },
+  };
 };
 
 export const isPiaReady = (item: Pick<ContentItem, "pain" | "insight" | "action">) =>

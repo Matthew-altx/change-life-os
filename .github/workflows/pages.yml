@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_COMMERCE_ENABLED: ${{ vars.VITE_COMMERCE_ENABLED }}
+      VITE_PAYMENT_API_BASE: ${{ vars.VITE_PAYMENT_API_BASE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
