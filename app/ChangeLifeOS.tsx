@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   calculateProgress,
   calculateStreak,
@@ -24,9 +24,8 @@ import { formatDate, getCopy, type Copy, type Locale, type Screen } from "./i18n
 import {
   loadUiPreferences,
   saveUiPreferences,
-  withLocale,
-  type UiPreferences,
 } from "./uiPreferences";
+import { initialRootState, rootReducer } from "./rootState";
 
 const NAV: { id: Screen; mark: string }[] = [
   { id: "today", mark: "01" },
@@ -365,8 +364,8 @@ function Reset({ state, update, onImport, onClear, copy }: { state: AppState; up
 }
 
 export default function ChangeLifeOS() {
-  const [state, setState] = useState<AppState>(() => createInitialState());
-  const [preferences, setPreferences] = useState<UiPreferences>({ locale: "zh-HK", guideSeen: false });
+  const [rootState, dispatch] = useReducer(rootReducer, initialRootState);
+  const { appState: state, preferences } = rootState;
   const [hydrated, setHydrated] = useState(false);
   const [screen, setScreen] = useState<Screen>("today");
   const [notice, setNotice] = useState<keyof Copy["notices"] | null>(null);
@@ -377,8 +376,11 @@ export default function ChangeLifeOS() {
     let cancelled = false;
     window.queueMicrotask(() => {
       if (!cancelled) {
-        setState(loadState(window.localStorage));
-        setPreferences(loadUiPreferences(window.localStorage));
+        dispatch({
+          type: "hydrate",
+          appState: loadState(window.localStorage),
+          preferences: loadUiPreferences(window.localStorage),
+        });
         setHydrated(true);
       }
     });
@@ -394,19 +396,23 @@ export default function ChangeLifeOS() {
     if (hydrated) saveUiPreferences(window.localStorage, preferences);
   }, [hydrated, preferences]);
 
-  const update = useMemo(() => (fn: (current: AppState) => AppState) => setState((current) => fn(current)), []);
-  const setLocale = (locale: Locale) => setPreferences((current) => withLocale(current, locale));
+  const update = useMemo(() => (fn: (current: AppState) => AppState) => dispatch({ type: "update-app", update: fn }), []);
+  const setLocale = (locale: Locale) => dispatch({ type: "set-locale", locale });
   const progress = calculateProgress(state.quests);
   const streak = calculateStreak(state.activeDates);
 
   if (!hydrated) return <div className="boot"><span className="brand-orbit">C</span><p>{copy.boot}</p></div>;
-  if (!state.profile.onboarded) return <Onboarding copy={copy} locale={preferences.locale} setLocale={setLocale} onFinish={(profile) => setState((current) => ({ ...current, profile, quests: [
+  if (!state.profile.onboarded) return <Onboarding copy={copy} locale={preferences.locale} setLocale={setLocale} onFinish={(profile) => update((current) => ({ ...current, profile, quests: [
     { id: makeId(), title: profile.ninetyDayOutcome, type: "main", skill: "marketing", completed: false, createdAt: localDate() },
     { id: makeId(), title: profile.bossFight, type: "boss", skill: "sales", completed: false, createdAt: localDate() },
   ], activeDates: [localDate()] }))} />;
 
   const importData = (text: string) => {
-    try { setState(parseImportedState(text)); setNotice("backupRestored"); }
+    try {
+      const imported = parseImportedState(text);
+      update(() => imported);
+      setNotice("backupRestored");
+    }
     catch (error) {
       if (error instanceof Error && error.message === getCopy("zh-HK").notices.invalidFile) setNotice("invalidFile");
       else if (error instanceof Error && error.message === getCopy("zh-HK").notices.unsupportedBackup) setNotice("unsupportedBackup");
@@ -415,7 +421,7 @@ export default function ChangeLifeOS() {
     }
   };
   const clear = () => {
-    if (window.confirm(copy.confirmations.clearAll)) setState(createInitialState());
+    if (window.confirm(copy.confirmations.clearAll)) update(() => createInitialState());
   };
 
   return <Shell screen={screen} setScreen={setScreen} level={progress.level} streak={streak} onGuide={() => setGuideOpen(true)} copy={copy} locale={preferences.locale} setLocale={setLocale}>

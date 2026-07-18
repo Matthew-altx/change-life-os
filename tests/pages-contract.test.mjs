@@ -5,6 +5,7 @@ import test from "node:test";
 const app = fs.readFileSync("app/ChangeLifeOS.tsx", "utf8");
 const i18n = fs.readFileSync("app/i18n.ts", "utf8");
 const preferences = fs.readFileSync("app/uiPreferences.ts", "utf8");
+const rootState = fs.readFileSync("app/rootState.ts", "utf8");
 const storage = fs.readFileSync("app/storage.ts", "utf8");
 const workflow = fs.readFileSync(".github/workflows/pages.yml", "utf8");
 const viteConfig = fs.readFileSync("vite.pages.config.ts", "utf8");
@@ -26,7 +27,8 @@ test("public version ships a Cantonese-first bilingual interface", () => {
   assert.match(i18n, /Turn life into a game worth playing/);
   assert.match(app, /document\.documentElement\.lang/);
   assert.match(app, /aria-pressed/);
-  assert.match(app, /withLocale\(current, locale\)/);
+  assert.match(app, /useReducer\(rootReducer, initialRootState\)/);
+  assert.match(rootState, /withLocale\(state\.preferences, action\.locale\)/);
 });
 
 test("UI preferences stay separate from life data", () => {

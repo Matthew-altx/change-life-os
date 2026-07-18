@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { createInitialState } from "./domain";
 import {
   UI_PREFERENCES_KEY,
   loadUiPreferences,
@@ -110,47 +109,13 @@ describe("UI preferences", () => {
     expect(JSON.parse(value)).toEqual({ locale: "en", guideSeen: true });
   });
 
-  it("changes only locale without mutating preferences or life data", () => {
+  it("changes only locale without mutating current preferences", () => {
     const current = Object.freeze({ locale: "zh-HK" as const, guideSeen: true });
-    const lifeState = createInitialState("2026-07-18");
-    lifeState.profile.antiVision = "唔想再停滯 / no more drift";
-    lifeState.profile.vision = "Build 自由生活";
-    lifeState.dailyPriority.text = "Call 陳先生 at 3pm";
-    lifeState.quests.push({
-      id: "mixed-quest",
-      title: "完成 proposal 草稿",
-      type: "main",
-      skill: "writing",
-      completed: false,
-      createdAt: "2026-07-18",
-    });
-    lifeState.contentItems.push({
-      id: "mixed-content",
-      title: "香港客戶 onboarding notes",
-      stage: "learn",
-      pain: "流程太散 / too fragmented",
-      insight: "先固定 one next action",
-      action: "明早 publish v1",
-    });
-    lifeState.reviews.push({
-      date: "2026-07-18",
-      wins: ["完成訪談", "Shipped draft", "保留專注時間"],
-      lessons: ["少即是多", "Ask before assuming"],
-      intention: "聽朝 finish English outline",
-    });
-    const lifeStateReference = lifeState;
-    const lifeStateSnapshot = structuredClone(lifeState);
 
     const next = withLocale(current, "en");
 
     expect(next).toEqual({ locale: "en", guideSeen: true });
     expect(next).not.toBe(current);
     expect(current).toEqual({ locale: "zh-HK", guideSeen: true });
-    expect(lifeState).toBe(lifeStateReference);
-    expect(lifeState).toEqual(lifeStateSnapshot);
-    expect(lifeState.dailyPriority.text).toBe("Call 陳先生 at 3pm");
-    expect(lifeState.quests[0]?.title).toBe("完成 proposal 草稿");
-    expect(lifeState.contentItems[0]?.title).toBe("香港客戶 onboarding notes");
-    expect(lifeState.reviews[0]?.intention).toBe("聽朝 finish English outline");
   });
 });

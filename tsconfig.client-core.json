@@ -16,6 +16,8 @@
     "app/uiPreferences.test.ts",
     "app/domain.ts",
     "app/storage.ts",
+    "app/rootState.ts",
+    "app/rootState.test.ts",
     "app/ChangeLifeOS.tsx"
   ]
 }
