@@ -3,6 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 const app = fs.readFileSync("app/ChangeLifeOS.tsx", "utf8");
+const styles = fs.readFileSync("app/globals.css", "utf8");
 const guide = fs.readFileSync("app/GuideDialog.tsx", "utf8");
 const i18n = fs.readFileSync("app/i18n.ts", "utf8");
 const preferences = fs.readFileSync("app/uiPreferences.ts", "utf8");
@@ -41,6 +42,14 @@ test("UI preferences stay separate from life data", () => {
 test("usage guide is reopenable from the main application", () => {
   assert.match(app, /copy\.utility\.guide/);
   assert.match(app, /setGuideOpen\(true\)/);
+});
+
+test("Editorial Focus shell keeps utilities and responsive guidance in the content area", () => {
+  assert.match(app, /<div className="main-wrap">\s*<header className="top-utility">/);
+  assert.match(styles, /--canvas: #F5F1E8/);
+  assert.match(styles, /\.guide-modal \{[^}]*height: 100dvh/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.doesNotMatch(styles, /gradient\(/);
 });
 
 test("contextual guide is keyboard accessible and reopenable", () => {

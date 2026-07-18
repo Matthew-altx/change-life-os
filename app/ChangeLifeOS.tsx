@@ -160,18 +160,16 @@ function Shell({ screen, setScreen, children, level, streak, onGuide, copy, loca
             </button>
           ))}
         </nav>
-        <div className="top-utility desktop-utility">
-          <LanguageSwitch locale={locale} setLocale={setLocale} copy={copy} />
-          <button className="guide-link" onClick={onGuide}>？ {copy.utility.guide}</button>
-        </div>
         <div className="sidebar-progress">
           <p>{copy.today.levelLabel(level)}</p><strong>{copy.today.streak(streak)}</strong><span>{copy.today.momentumNote}</span>
         </div>
       </aside>
-      <div className="main-wrap">{children}</div>
-      <div className="top-utility mobile-utility">
-        <LanguageSwitch locale={locale} setLocale={setLocale} copy={copy} />
-        <button className="guide-fab" onClick={onGuide} aria-label={copy.utility.openGuide}>？</button>
+      <div className="main-wrap">
+        <header className="top-utility">
+          <LanguageSwitch locale={locale} setLocale={setLocale} copy={copy} />
+          <button className="guide-link" onClick={onGuide}>？ {copy.utility.guide}</button>
+        </header>
+        {children}
       </div>
       <nav className="mobile-nav">
         {NAV.map((item) => (
