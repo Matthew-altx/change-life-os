@@ -71,6 +71,7 @@ describe("locale copy", () => {
     expect(orientation).toHaveLength(5);
     expect(orientation[0]).toMatch(/90-day.*Boss Fight/i);
     expect(orientation[1]).toMatch(/daily priority/i);
+    expect(en.guide.orientation[1].body).toContain("Finish the highest-leverage action");
     expect(orientation[2]).toMatch(/focused work session/i);
     expect(orientation[3]).toMatch(/Learn.*Teach.*Sell.*PIA/);
     expect(orientation[4]).toMatch(/3-2-1 review/i);

@@ -538,7 +538,7 @@ const en: LocalizedCopy = {
     start: "Start now",
     orientation: [
       { title: "Face the cost and set a 90-day direction", body: "Write the cost of staying unchanged, then choose one verifiable 90-day outcome and the Boss Fight you keep avoiding." },
-      { title: "Choose one daily priority", body: "Finish one highest-leverage action before low-value work and outside demands." },
+      { title: "Choose one daily priority", body: "Finish the highest-leverage action before low-value work and outside demands." },
       { title: "Protect a focused work session", body: "Turn off notifications and noise, then protect an uninterrupted block for today's most important work." },
       { title: "Turn experience into Learn–Teach–Sell output", body: "Move content through Learn, Teach and Sell, then use PIA to complete Pain, Insight and Action." },
       { title: "Close with a 3-2-1 review", body: "Record three wins, two lessons and one intention for tomorrow so you can clear your mind and close the day." },
