@@ -57,6 +57,11 @@ test("Editorial Focus shell keeps utilities and responsive guidance in the conte
   assert.match(styles, /\.mobile-nav button\.active \{[^}]*var\(--orange\)/);
   assert.match(styles, /\.mobile-nav button\.active span \{ color: var\(--orange\); \}/);
   assert.doesNotMatch(styles, /\.(?:sidebar nav button|mobile-nav button)\.active(?: span)? \{[^}]*var\(--gold\)/);
+  assert.match(styles, /\.capture \.button \{[^}]*min-width: 104px;[^}]*white-space: nowrap;[^}]*word-break: normal;[^}]*overflow-wrap: normal/);
+  assert.match(styles, /\.capture \{ min-width: 0; width: 100%; display: grid; grid-template-columns: minmax\(0, 1fr\) auto; \}/);
+  assert.match(styles, /\.detox-card \.card-kicker small \{ color: #DCE7E1; \}/);
+  assert.match(styles, /\.detox-card label span \{ color: #ED974C;/);
+  assert.doesNotMatch(styles, /\.detox-card[^{]*\{[^}]*var\(--gold\)/);
   assert.match(styles, /\.guide-modal \{[^}]*height: 100dvh/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(styles, /gradient\(/);
