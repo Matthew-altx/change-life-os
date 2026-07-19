@@ -16,6 +16,12 @@ import {
   type LifeDimension,
 } from "./domain";
 import { downloadCompletionCard, createCompletionCardSvg } from "./completionCard";
+import {
+  gardenBackgroundAsset,
+  gardenDimensionAsset,
+  gardenGrowthLevel,
+  guardianStageAsset,
+} from "./gardenAssets";
 import { localizeGrowthQuest, pickGrowthQuest } from "./growthQuests";
 import type { Copy, Locale } from "./i18n";
 import type { GardenThemeId } from "./domain";
@@ -30,24 +36,30 @@ function GardenScene({ state, copy, themeOverride }: { state: AppState; copy: Co
   const { garden } = state.growth;
   const totalSeeds = Object.values(garden.growth).reduce((sum, value) => sum + value, 0);
   const firstLight = (themeOverride ?? garden.activeThemeId) === "first-light-garden";
+  const activeTheme = firstLight ? "first-light-garden" : "classic";
   return (
     <figure className={`life-garden ${firstLight ? "theme-first-light" : "theme-classic"}`} aria-label={copy.growth.gardenLabel}>
-      <div className="garden-sky"><span className="garden-sun" /><span className="garden-moon" /><span className="garden-water" /></div>
-      <div className="garden-landscape">
-        {LIFE_DIMENSIONS.map((dimension, index) => {
+      <img className="garden-background" src={gardenBackgroundAsset(activeTheme)} alt="" aria-hidden="true" />
+      <div className="garden-image-vignette" aria-hidden="true" />
+      <div className="garden-image-zones">
+        {LIFE_DIMENSIONS.map((dimension) => {
           const amount = garden.growth[dimension];
-          const scale = Math.min(1.65, .7 + amount * .12);
-          return <div className={`garden-zone zone-${dimension}`} key={dimension} style={{ "--growth-scale": scale, "--zone-index": index } as React.CSSProperties}>
-            <span className="garden-motif" aria-hidden="true" />
-            <strong>{copy.growth.dimensions[dimension].label}</strong>
-            <small>{copy.growth.dimensions[dimension].motif} · {amount}</small>
-          </div>;
+          const level = gardenGrowthLevel(amount);
+          return <article className={`garden-image-zone zone-${dimension}`} key={dimension} style={{ "--growth-level": level } as React.CSSProperties}>
+            <img src={gardenDimensionAsset(dimension)} alt="" aria-hidden="true" />
+            <div className="garden-zone-copy">
+              <strong>{copy.growth.dimensions[dimension].label}</strong>
+              <small>{copy.growth.dimensions[dimension].motif}</small>
+              <span className="garden-growth-track" aria-hidden="true"><i /></span>
+            </div>
+            <b aria-label={`${amount} ${copy.growth.seeds}`}>{amount}</b>
+          </article>;
         })}
-        <div className={`guardian guardian-stage-${garden.guardianStage}`} role="img" aria-label={copy.growth.guardianLabel(garden.guardianStage)}>
-          <span className="guardian-halo" /><span className="guardian-head" /><span className="guardian-body" />
-        </div>
       </div>
-      <span className="supporter-mark" aria-hidden="true" />
+      <div className={`guardian-image guardian-stage-${garden.guardianStage}`} role="img" aria-label={copy.growth.guardianLabel(garden.guardianStage)}>
+        <img src={guardianStageAsset(garden.guardianStage)} alt="" aria-hidden="true" />
+      </div>
+      <span className="supporter-mark" aria-hidden="true">✦</span>
       <figcaption><strong>{totalSeeds}</strong><span>{copy.growth.seeds}</span></figcaption>
     </figure>
   );
