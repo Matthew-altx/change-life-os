@@ -30,6 +30,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.dev.vars*
+!payments-worker/.dev.vars.example
+.playwright-cli/
+output/playwright/
 
 # vercel
 .vercel
@@ -40,6 +44,7 @@ next-env.d.ts
 /dist/
 /dist-pages/
 /.wrangler/
+**/.wrangler/
 /outputs/
 /work/
 

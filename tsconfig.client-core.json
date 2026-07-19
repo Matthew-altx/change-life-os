@@ -10,11 +10,17 @@
     "skipLibCheck": true
   },
   "include": [
+    "app/vite-env.d.ts",
     "app/i18n.ts",
     "app/i18n.test.ts",
     "app/uiPreferences.ts",
     "app/uiPreferences.test.ts",
     "app/domain.ts",
+    "app/growthQuests.ts",
+    "app/completionCard.ts",
+    "app/GrowthGarden.tsx",
+    "app/commerce.ts",
+    "app/ThemeShop.tsx",
     "app/storage.ts",
     "app/rootState.ts",
     "app/rootState.test.ts",

@@ -95,6 +95,9 @@ describe("locale copy", () => {
 
   it("smoke-tests every dynamic label helper", () => {
     const expectedPaths = [
+      "growth.cycleProgress",
+      "growth.cycleWindow",
+      "growth.guardianLabel",
       "guide.moduleTab",
       "guide.moduleTitle",
       "human.scoreLabel",
@@ -123,6 +126,9 @@ describe("locale copy", () => {
       COPY["zh-HK"].human.scoreLabel("心智", 4),
       COPY["zh-HK"].guide.moduleTab("今日"),
       COPY["zh-HK"].guide.moduleTitle("今日"),
+      COPY["zh-HK"].growth.cycleProgress(4),
+      COPY["zh-HK"].growth.cycleWindow("2026-07-19", "2026-08-01"),
+      COPY["zh-HK"].growth.guardianLabel(2),
     ]).toEqual([
       "第 2 步，共 4 步",
       "LEVEL 3",
@@ -135,6 +141,9 @@ describe("locale copy", () => {
       "心智 4 分",
       "今日指南",
       "今日：點解做、點做、完成標準",
+      "今輪 4 / 7 粒生命種子",
+      "2026-07-19 至 2026-08-01",
+      "守護靈成長階段 2 / 4",
     ]);
 
     expect([
