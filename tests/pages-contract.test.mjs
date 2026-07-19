@@ -108,6 +108,10 @@ test("Editorial Focus shell keeps utilities and responsive guidance in the conte
   assert.doesNotMatch(styles, /\.guide-list/);
   assert.match(styles, /\.guide-modal \{[^}]*height: 100dvh/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(styles, /\.garden-hud\s*\{/);
+  assert.match(styles, /\.guardian-image\s*\{[^}]*background:\s*transparent/s);
+  assert.match(styles, /@media \(max-width: 460px\)[\s\S]*\.life-garden\s*\{[^}]*min-height:\s*470px/);
+  assert.doesNotMatch(styles, /\.guardian-image\s*\{[^}]*overflow:\s*hidden/s);
   assert.doesNotMatch(styles, /gradient\(/);
 });
 
