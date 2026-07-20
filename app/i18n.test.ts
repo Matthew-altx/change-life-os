@@ -97,6 +97,7 @@ describe("locale copy", () => {
     const expectedPaths = [
       "growth.cycleProgress",
       "growth.cycleWindow",
+      "growth.guardianHud",
       "growth.guardianLabel",
       "guide.moduleTab",
       "guide.moduleTitle",
@@ -129,6 +130,7 @@ describe("locale copy", () => {
       COPY["zh-HK"].growth.cycleProgress(4),
       COPY["zh-HK"].growth.cycleWindow("2026-07-19", "2026-08-01"),
       COPY["zh-HK"].growth.guardianLabel(2),
+      COPY["zh-HK"].growth.guardianHud(2),
     ]).toEqual([
       "第 2 步，共 4 步",
       "LEVEL 3",
@@ -144,6 +146,7 @@ describe("locale copy", () => {
       "今輪 4 / 7 粒生命種子",
       "2026-07-19 至 2026-08-01",
       "守護靈成長階段 2 / 4",
+      "守護靈 2 / 4",
     ]);
 
     expect([
@@ -158,6 +161,7 @@ describe("locale copy", () => {
       COPY.en.human.scoreLabel("Mind", 4),
       COPY.en.guide.moduleTab("Today"),
       COPY.en.guide.moduleTitle("Today"),
+      COPY.en.growth.guardianHud(2),
     ]).toEqual([
       "Step 2 of 4",
       "LEVEL 3",
@@ -170,6 +174,7 @@ describe("locale copy", () => {
       "Mind: 4 points",
       "Today guide",
       "Today: why, how and done when",
+      "Guardian 2 / 4",
     ]);
   });
 

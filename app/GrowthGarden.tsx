@@ -60,7 +60,11 @@ function GardenScene({ state, copy, themeOverride }: { state: AppState; copy: Co
         <img src={guardianStageAsset(garden.guardianStage)} alt="" aria-hidden="true" />
       </div>
       <span className="supporter-mark" aria-hidden="true">✦</span>
-      <figcaption><strong>{totalSeeds}</strong><span>{copy.growth.seeds}</span></figcaption>
+      <figcaption className="garden-hud">
+        <span><strong>{totalSeeds}</strong>{copy.growth.seeds}</span>
+        <i aria-hidden="true">·</i>
+        <span>{copy.growth.guardianHud(garden.guardianStage)}</span>
+      </figcaption>
     </figure>
   );
 }

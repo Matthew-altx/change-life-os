@@ -167,8 +167,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .garden-background { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; transform: scale(1.01); }
 .garden-image-vignette { position: absolute; z-index: 1; inset: 0; background: rgba(8,31,23,.06); box-shadow: inset 0 0 92px rgba(8,31,23,.46), inset 0 -52px 58px rgba(8,31,23,.28); pointer-events: none; }
 .garden-image-zones { position: absolute; z-index: 3; inset: 0; pointer-events: none; }
-.garden-image-zone { position: absolute; width: min(38%, 190px); height: 120px; overflow: hidden; border: 1px solid rgba(255,255,255,.4); border-radius: 16px; background: #143C2D; box-shadow: 0 14px 34px rgba(8,31,23,.28); transition: transform .35s ease, box-shadow .35s ease; }
-.garden-image-zone::after { content: ""; position: absolute; inset: 0; z-index: 1; box-shadow: inset 0 -72px 52px -32px rgba(8,31,23,.96); }
+.garden-image-zone { position: absolute; width: min(38%, 190px); height: 108px; overflow: hidden; border: 1px solid rgba(255,255,255,.3); border-radius: 16px; background: rgba(20,60,45,.72); box-shadow: 0 10px 26px rgba(8,31,23,.2); transition: transform .35s ease, box-shadow .35s ease; }
+.garden-image-zone::after { content: ""; position: absolute; inset: 0; z-index: 1; box-shadow: inset 0 -58px 42px -30px rgba(8,31,23,.84); }
 .garden-image-zone > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: calc(.58 + var(--growth-level) * .42); filter: saturate(calc(.7 + var(--growth-level) * .45)) brightness(calc(.74 + var(--growth-level) * .3)); transform: scale(calc(1.07 - var(--growth-level) * .05)); transition: filter .4s ease, opacity .4s ease, transform .4s ease; }
 .garden-image-zone.zone-mind { top: 86px; left: 18px; }
 .garden-image-zone.zone-body { top: 86px; right: 18px; }
@@ -177,19 +177,20 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
 .garden-zone-copy { position: absolute; z-index: 2; right: 12px; bottom: 10px; left: 12px; display: grid; grid-template-columns: 1fr; gap: 1px; }
 .garden-zone-copy strong { font-family: Georgia, "Noto Serif TC", serif; font-size: 18px; text-shadow: 0 2px 8px rgba(0,0,0,.65); }
 .garden-zone-copy small { overflow: hidden; color: rgba(255,255,255,.78); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-.garden-image-zone > b { position: absolute; z-index: 2; top: 9px; right: 9px; min-width: 27px; height: 27px; padding: 0 7px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; color: #143C2D; background: rgba(255,248,221,.9); box-shadow: 0 4px 14px rgba(0,0,0,.2); font-size: 11px; }
+.garden-image-zone > b { position: absolute; z-index: 2; top: 9px; right: 9px; min-width: 24px; height: 24px; padding: 0 6px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; color: #143C2D; background: rgba(255,248,221,.9); box-shadow: 0 4px 14px rgba(0,0,0,.2); font-size: 10px; }
 .garden-growth-track { height: 3px; margin-top: 6px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.2); }
 .garden-growth-track i { width: calc(var(--growth-level) * 100%); height: 100%; display: block; border-radius: inherit; background: #f5d982; box-shadow: 0 0 8px rgba(245,217,130,.7); }
-.guardian-image { position: absolute; z-index: 4; width: 152px; height: 206px; left: 50%; top: 52%; overflow: hidden; border: 1px solid rgba(255,255,255,.46); border-radius: 28px 28px 42% 42%; background: #143C2D; box-shadow: 0 24px 44px rgba(8,31,23,.38), 0 0 0 6px rgba(255,255,255,.1); transform: translate(-50%, -50%); }
-.guardian-image img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.guardian-image { position: absolute; z-index: 4; width: 156px; height: 208px; left: 50%; top: 53%; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; transform: translate(-50%, -50%); filter: drop-shadow(0 18px 24px rgba(8,31,23,.34)); }
+.guardian-image img { width: 100%; height: 100%; display: block; object-fit: contain; }
 .guardian-stage-4 { animation: guardian-image-breathe 3.6s ease-in-out infinite; }
-.life-garden figcaption { position: absolute; z-index: 6; top: 20px; left: 22px; padding: 8px 12px; display: flex; align-items: baseline; gap: 8px; border: 1px solid rgba(255,255,255,.38); border-radius: 12px; color: white; background: rgba(8,31,23,.58); box-shadow: 0 8px 24px rgba(8,31,23,.2); backdrop-filter: blur(10px); }
-.life-garden figcaption strong { font-family: Georgia, serif; font-size: 30px; }
-.life-garden figcaption span { font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+.garden-hud { position: absolute; z-index: 6; top: 18px; left: 20px; min-height: 36px; padding: 7px 12px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgba(255,255,255,.38); border-radius: 999px; color: white; background: rgba(8,31,23,.54); box-shadow: 0 8px 22px rgba(8,31,23,.18); backdrop-filter: blur(10px); }
+.garden-hud span { display: inline-flex; align-items: baseline; gap: 5px; font-size: 10px; font-weight: 800; }
+.garden-hud strong { font-family: Georgia, serif; font-size: 18px; line-height: 1; }
+.garden-hud i { color: rgba(255,255,255,.55); font-style: normal; }
 .life-garden.theme-first-light { border-color: rgba(215,174,94,.72); box-shadow: 0 24px 76px rgba(154,61,26,.22); }
 .theme-first-light .garden-image-vignette { background: rgba(255,238,177,.04); box-shadow: inset 0 0 84px rgba(96,63,21,.2), inset 0 -48px 58px rgba(20,60,45,.2); }
 .theme-first-light .garden-image-zone { border-color: rgba(255,231,160,.66); box-shadow: 0 14px 36px rgba(96,63,21,.26); }
-.theme-first-light .guardian-image { border-color: rgba(255,231,160,.88); box-shadow: 0 24px 50px rgba(96,63,21,.32), 0 0 34px rgba(255,223,141,.42), 0 0 0 6px rgba(255,250,223,.16); }
+.theme-first-light .guardian-image { border: 0; box-shadow: none; filter: drop-shadow(0 18px 28px rgba(96,63,21,.32)) drop-shadow(0 0 15px rgba(255,223,141,.38)); }
 .supporter-mark { position: absolute; z-index: 6; top: 22px; right: 22px; width: 38px; height: 38px; display: none; place-items: center; border: 1px solid rgba(255,255,255,.76); border-radius: 50%; color: #143C2D; background: #D6AE5E; box-shadow: 0 8px 28px rgba(96,63,21,.32), inset 0 0 0 4px rgba(255,255,255,.28); font-size: 16px; }
 .theme-first-light .supporter-mark { display: grid; }
 .growth-action-card { min-height: 540px; padding: var(--space-5); }
@@ -430,19 +431,19 @@ input:focus, textarea:focus, select:focus { border-color: var(--orange); box-sha
   .quest-row { grid-template-columns: auto 1fr auto; }
   .quest-row > span { display: none; }
   .review-card, .protocol-card, .detox-card { padding: 22px; }
-  .life-garden { min-height: 520px; }
+  .life-garden { min-height: 470px; }
   .garden-background { object-position: 52% center; }
-  .garden-image-zone { width: calc(50% - 19px); height: 108px; border-radius: 13px; }
-  .garden-image-zone.zone-mind, .garden-image-zone.zone-body { top: 78px; }
-  .garden-image-zone.zone-mind, .garden-image-zone.zone-spirit { left: 12px; }
-  .garden-image-zone.zone-body, .garden-image-zone.zone-vocation { right: 12px; }
-  .garden-image-zone.zone-spirit, .garden-image-zone.zone-vocation { bottom: 14px; }
-  .garden-zone-copy { right: 9px; bottom: 8px; left: 9px; }
+  .garden-hud { top: 12px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .garden-image-zone { width: calc(50% - 17px); height: 92px; border-radius: 13px; }
+  .garden-image-zone.zone-mind, .garden-image-zone.zone-body { top: 62px; }
+  .garden-image-zone.zone-mind, .garden-image-zone.zone-spirit { left: 10px; }
+  .garden-image-zone.zone-body, .garden-image-zone.zone-vocation { right: 10px; }
+  .garden-image-zone.zone-spirit, .garden-image-zone.zone-vocation { bottom: 12px; }
+  .garden-zone-copy { right: 9px; bottom: 7px; left: 9px; }
   .garden-zone-copy strong { font-size: 15px; }
   .garden-zone-copy small { display: none; }
-  .guardian-image { width: 132px; height: 178px; top: 52%; border-radius: 24px 24px 40% 40%; }
-  .life-garden figcaption { top: 14px; left: 14px; }
-  .supporter-mark { top: 16px; right: 16px; }
+  .guardian-image { width: 132px; height: 176px; top: 52%; }
+  .supporter-mark { top: 12px; right: 12px; width: 32px; height: 32px; }
   .dimension-picker { grid-template-columns: 1fr 1fr; }
   .choice-picker { grid-template-columns: 1fr; }
   .guide-actions { grid-template-columns: 1fr; }

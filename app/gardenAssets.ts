@@ -9,6 +9,8 @@ export const gardenBackgroundAsset = (theme: GardenThemeId) => gardenAsset(
 
 export const gardenDimensionAsset = (dimension: LifeDimension) => gardenAsset(`dimension-${dimension}.webp`);
 
-export const guardianStageAsset = (stage: number) => gardenAsset(`guardian-${Math.max(0, Math.min(4, Math.round(stage)))}.webp`);
+export const guardianStageAsset = (stage: number) => gardenAsset(
+  `guardian-${Math.max(0, Math.min(4, Math.round(stage)))}-alpha.webp`,
+);
 
 export const gardenGrowthLevel = (amount: number) => Math.max(0, Math.min(1, amount / 7));
